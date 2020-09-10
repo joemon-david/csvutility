@@ -1,5 +1,6 @@
 package com.business.csv;
 
+import com.tool.csv.CSVMatcher;
 import com.tool.csv.CSVReader;
 import com.tool.csv.CSVWriter;
 import org.apache.commons.csv.CSVPrinter;
@@ -30,8 +31,8 @@ public class CSVOperator {
         List<CSVRecord> recordList1 = reader.getAllRecordList(relativeInputFile1Path);
         List<CSVRecord> recordList2 = reader.getAllRecordList(relativeInputFile2Path);
 
-        List<CSVRecord> recordList = new ArrayList<>();
-        List<CSVRecord> recordListNxt = new ArrayList<>();
+        List<CSVRecord> recordList;
+        List<CSVRecord> recordListNxt;
 
         int record1Size=recordList1.size();
         int record2Size=recordList2.size();
@@ -77,8 +78,17 @@ public class CSVOperator {
 
 
     public static void main(String[] args) {
+
+        CSVWriter writer = new CSVWriter();
+        CSVReader reader = new CSVReader();
         CSVOperator operator = new CSVOperator();
-        operator.compareTwoCSVFile("data//output//benin.csv","data//output//iraq.csv");
+//        operator.compareTwoCSVFile("data//output//benin.csv","data//output//iraq.csv");
 //        operator.extractContentAndWrite("data//input//people.csv","data//output//benin.csv","Country","norway","Name","Age","Date of Birth","Country");
+
+        List<CSVRecord> recordList=CSVMatcher.getInstance("data//input//people.csv").getAllMatchingRecord().where().headerValueEquals("age",36)
+        .and().headerValueEquals("Country","Singapore").build();
+
+        CSVPrinter printer = writer.createCSVPrinter("data//output//benin2.csv","Name","Age","Phone","email","City","Country");
+        writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,"Name","Age","Phone","email","City","Country"));
     }
 }

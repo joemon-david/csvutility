@@ -11,15 +11,19 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CSVOperator {
+    static CSVReader reader = new CSVReader();
+    static CSVWriter writer = new CSVWriter();
 
 
     public void extractContentAndWrite(String relativeInputFilePath,String relativeOutputFilePath,String conditionHeader,String matchValue,String ... outputHeaders)
     {
-
-        CSVReader reader = new CSVReader();
-        CSVWriter writer = new CSVWriter();
-
         List<CSVRecord> recordList = reader.getMatchingRecordList(relativeInputFilePath,conditionHeader,matchValue);
+        CSVPrinter printer = writer.createCSVPrinter(relativeOutputFilePath,outputHeaders);
+        writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,outputHeaders));
+    }
+
+    public void writeCSVRecordListWithRequiredHeaders(List<CSVRecord>  recordList,String relativeOutputFilePath,String ... outputHeaders)
+    {
         CSVPrinter printer = writer.createCSVPrinter(relativeOutputFilePath,outputHeaders);
         writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,outputHeaders));
     }

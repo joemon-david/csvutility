@@ -7,6 +7,7 @@ import com.config.path.ConfigParams;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +41,8 @@ public class ExcelReader implements ConfigParams {
         try {
 
             FileInputStream excelFile = new FileInputStream(new File(filePath));
-            Workbook workbook = new HSSFWorkbook(excelFile);
+
+            Workbook workbook = (ConfigParams.selectedFormat == FILE_FORMAT.XLSX)?new XSSFWorkbook(excelFile) :new HSSFWorkbook(excelFile);
             excelDataMap = new LinkedHashMap<>();
             LinkedHashMap<Integer,String> headerMap = new LinkedHashMap<>();
             int recordNumber=0;

@@ -46,12 +46,12 @@ public class XLSOperator {
     public static void main(String[] args) {
 
         XLSOperator operator = new XLSOperator();
-        String [] headers = new String[]{"timestamp","name", "application_Version","client_Type"};
+        String [] headers = new String[]{"email","phone","age","name"};
         operator.readXLSFileAndSaveContentToMap();
         operator.selectAllMatchingRecord();
-        operator.selectRowWithHeaderValueEquals("name","userStatusRowTapped");
-        operator.selectRowWithHeaderValueEquals("timestamp","9/11/2020");
-        operator.filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter("data//output//mh.csv","Apple",headers);
+        operator.selectRowWithHeaderValueEquals("Country","Germany");
+//        operator.selectRowWithHeaderValueEquals("timestamp","9/11/2020");
+        operator.filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter("data//output//mh.csv","800",headers);
 //        LinkedHashMap<Integer, LinkedHashMap<String, Object>> result = ExcelMatcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName)
 //                .getAllMatchingRecord().where().headerValueEquals("name","userStatusRowTapped")
 //                .and().headerValueEquals("timestamp","9/11/2020").build();
@@ -76,7 +76,7 @@ public class XLSOperator {
     public ArrayList<ArrayList<String>> convertMapToListWithRequiredHeaders(LinkedHashMap<Integer, LinkedHashMap<String, Object>> map,String... headers)
     {
         ArrayList<ArrayList<String>> resultList = new ArrayList<>();
-        List<String> outputHeaders = Arrays.asList(headers);
+        ArrayList<String> outputHeaders = new ArrayList<>(Arrays.asList(headers));
 
         for (Map.Entry<Integer, LinkedHashMap<String, Object>> entry : map.entrySet()) {
             ArrayList<String> rowList = getFilteredRowValues(outputHeaders, entry);
@@ -85,17 +85,14 @@ public class XLSOperator {
             return resultList;
     }
 
-    private ArrayList<String> getFilteredRowValues(List<String> outputHeaders, Map.Entry<Integer, LinkedHashMap<String, Object>> entry) {
+    private ArrayList<String> getFilteredRowValues(ArrayList<String> outputHeaders, Map.Entry<Integer, LinkedHashMap<String, Object>> entry) {
         Integer index = entry.getKey();
         LinkedHashMap<String, Object> rowMap = entry.getValue();
         ArrayList<String> rowList = new ArrayList<>();
-        for (Map.Entry<String, Object> e : rowMap.entrySet()) {
-            String key = e.getKey();
-            Object value = e.getValue();
-            if(outputHeaders.contains(key))
-            {
-                rowList.add(value.toString());
-            }
+        for (String header:outputHeaders) {
+            rowList.add(rowMap.get(header).toString());
+
+//
         }
         return rowList;
     }
@@ -103,7 +100,7 @@ public class XLSOperator {
     public ArrayList<ArrayList<String>> convertMapToListWithRequiredHeadersAndAdditionalParameter(LinkedHashMap<Integer, LinkedHashMap<String, Object>> map,String additionalParam,String... headers)
     {
         ArrayList<ArrayList<String>> resultList = new ArrayList<>();
-        List<String> outputHeaders = Arrays.asList(headers);
+        ArrayList<String> outputHeaders = new ArrayList<> (Arrays.asList(headers));
         Reporter.printArrayList(outputHeaders);
         int suffixIndex = 0;
 

@@ -1,5 +1,7 @@
 package com.helper.file;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.*;
 
 public class FileCopyUtility {
@@ -7,7 +9,8 @@ public class FileCopyUtility {
 
 
         public static void main(String[] args) {
-            String fileLocationSourceNetwork = "//mynetwork//mydata";
+           
+            String fileLocationSourceNetwork = "//Qaha-uber-db//mhcureshare//wctp";
             String fileLocationSourceDrive = "C://mavenRepo";
 
             String fileLocationDestination = "C://temp//";
@@ -20,12 +23,16 @@ public class FileCopyUtility {
 
             System.out.println("nn");
 
-            /**Copy the files from the drive**/
-            copyFiles(	fileLocationSourceDrive,
-                    fileLocationDestination,
-                    numberOfFilesToCopy);
+//            /**Copy the files from the drive**/
+//            copyFiles(	fileLocationSourceDrive,
+//                    fileLocationDestination,
+//                    numberOfFilesToCopy);
 
         }
+
+
+
+
 
         public static void copyFiles(String fileLocationSource,
                                      String fileLocationDestination, int numberOfFilesToCopy) {
@@ -49,6 +56,8 @@ public class FileCopyUtility {
                         }
                     }
                 }
+            }else {
+                System.out.println("inputLocation is Directory ? "+inputLocation.isDirectory());
             }
             System.out.println("Completed...");
         }

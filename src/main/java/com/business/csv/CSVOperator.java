@@ -6,6 +6,7 @@ import com.tool.csv.CSVWriter;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +27,21 @@ public class CSVOperator {
     {
         CSVPrinter printer = writer.createCSVPrinter(relativeOutputFilePath,outputHeaders);
         writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,outputHeaders));
+    }
+
+    public void writeCSVRecordListWithRequiredHeaders(ArrayList<ArrayList<String>> recordList,String relativeOutputFilePath,String ... outputHeaders)
+    {
+        CSVPrinter printer = writer.createCSVPrinter(relativeOutputFilePath,outputHeaders);
+
+            recordList.forEach((list)->{
+                try {
+                    printer.printRecord(list);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        writer.writeCSVPrinter(printer);
     }
 
 

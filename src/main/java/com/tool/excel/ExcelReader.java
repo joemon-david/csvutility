@@ -3,24 +3,19 @@ package com.tool.excel;
 import com.codoid.products.fillo.Connection;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
-import com.config.path.FilePath;
-import cucumber.api.java.hu.Ha;
+import com.config.path.ConfigParams;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-public class ExcelReader implements FilePath {
+public class ExcelReader implements ConfigParams {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("M/dd/yyyy");
 
     public static Recordset filterWorkSheet(String sheet, String Colname, String criteria) throws Throwable
@@ -31,7 +26,7 @@ public class ExcelReader implements FilePath {
         Recordset recordset;
         String whereConditionString;
         String strQuery;
-        connection = fillo.getConnection(FilePath.masterFilePath);
+        connection = fillo.getConnection(ConfigParams.masterFilePath);
         whereConditionString=" where " + Colname + " ='"+criteria+"'";
         strQuery="Select * from " + sheet + " " + whereConditionString;
         recordset=connection.executeQuery(strQuery);
@@ -90,6 +85,7 @@ public class ExcelReader implements FilePath {
             System.out.println("Scanning Completed ->Total Records "+recordNumber);
             System.out.print("Header values -> ");
             headerMap.forEach((key,value)-> System.out.print(value+","));
+            System.out.println();
         } catch (IOException e) {
             e.printStackTrace();
         }

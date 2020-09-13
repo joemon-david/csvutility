@@ -12,6 +12,7 @@ public class ExcelMatcher {
     private static LinkedHashMap<Integer, LinkedHashMap<String,Object>> excelSheetDataMap = new LinkedHashMap<>();
     private static Map<Object,Object> equalsObjectMap = new LinkedHashMap<>();
     private static LinkedHashMap<Integer, LinkedHashMap<String,Object>> matchingDataMap = new LinkedHashMap<>();
+    private static StringBuilder sb = new StringBuilder();
 
 
     private ExcelMatcher (){}
@@ -32,19 +33,20 @@ public class ExcelMatcher {
     public ExcelMatcher headerValueEquals(Object header, Object match)
     {
         equalsObjectMap.put(header,match);
+        sb.append(" ").append(header).append(" == ").append(match);
         return matcher;
     }
     public ExcelMatcher getAllMatchingRecord()
     {
-        return matcher;
+        sb.append("Select all matching value ");return matcher;
     }
     public ExcelMatcher where()
     {
-        return matcher;
+        sb.append(" where "); return matcher;
     }
     public ExcelMatcher and()
     {
-        return matcher;
+        sb.append(" and "); return matcher;
     }
 
     public LinkedHashMap<Integer, LinkedHashMap<String,Object>> build()
@@ -72,6 +74,7 @@ public class ExcelMatcher {
             }
 
         }
+        System.out.println(sb.toString());
         return matchingDataMap;
     }
 

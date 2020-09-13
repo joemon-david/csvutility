@@ -15,8 +15,9 @@ Feature: Test CSV Operation
 
   @RunNow
   Scenario: Multiple Filter Test
-      Given Read xls file "data//input//people.csv"
+      Given Read xls file provided in the FilePath interface
       And Select all the xls records that matches below condition
-      When the xls column header "Country" equals "Syria"
-      And the header "Age" equals "30"
-      Then create a csv file "data//output//syria.csv" from xls file with fields "name,age,country"
+      When the xls column header "timestamp" equals "9/11/2020"
+      And the xls column header "name" equals "login"
+      And the xls column header "client_OS" equals "iOS 13.1.3"
+      Then create a csv file "data//output//mhb.csv" from xls file with fields "timestamp,name,user_Id,client_OS" and an additional field "Build One"

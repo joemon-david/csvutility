@@ -114,6 +114,30 @@ public class SQLExecuter {
     }
 
 
+    public ResultSet executeQueryAndGetData(String sql) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            return executeAndGetResultSet(connection, sql);
+        } finally {
+//            cleanup(connection, null, null);
+        }
+    }
+
+    private ResultSet executeAndGetResultSet(Connection connection, String sql) throws SQLException {
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = connection.createStatement();
+            rs = stmt.executeQuery(sql);
+            return rs;
+        } finally {
+//            cleanup(null, null, null);
+        }
+    }
+
+
+
     /**
      * Executes  sql statement such as an update,insert or delete
      *
@@ -199,7 +223,9 @@ public class SQLExecuter {
 
     private Connection getConnection() throws SQLException {
         Connection connection = DriverManager.getConnection(connStr, connUser, connPassword);
+
         connection.setAutoCommit(true);
+        System.out.println("Successfully Connected to Data base "+connStr);
         return connection;
     }
 

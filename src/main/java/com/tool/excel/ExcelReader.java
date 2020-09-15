@@ -43,6 +43,8 @@ public class ExcelReader implements ConfigParams {
             FileInputStream excelFile = new FileInputStream(new File(filePath));
 
             Workbook workbook = (ConfigParams.selectedFormat == FILE_FORMAT.XLSX)?new XSSFWorkbook(excelFile) :new HSSFWorkbook(excelFile);
+
+            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             excelDataMap = new LinkedHashMap<>();
             LinkedHashMap<Integer,String> headerMap = new LinkedHashMap<>();
             int recordNumber=0;
@@ -74,6 +76,16 @@ public class ExcelReader implements ConfigParams {
                             rowDataMap.put(headerMap.get(columnNumber), currentCell.getNumericCellValue());
 //
                         }
+                    }else if (currentCell.getCellType() == CellType.BOOLEAN)
+                    {
+                        rowDataMap.put(headerMap.get(columnNumber),currentCell.getBooleanCellValue());
+                    }
+                    else if(currentCell.getCellType() == CellType.FORMULA)
+                    {
+                        rowDataMap.put(headerMap.get(columnNumber),getFormulaValue(evaluator,currentCell));
+                    }else if (currentCell.getCellType() == CellType.BLANK)
+                    {
+                        rowDataMap.put(headerMap.get(columnNumber),"");
                     }
 
                     columnNumber++;
@@ -100,6 +112,30 @@ public class ExcelReader implements ConfigParams {
         return readDataFromExcelFile(masterFilePath,masterSheetName);
     }
 
+
+    private static String getFormulaValue(FormulaEvaluator evaluator, Cell cell)
+    {
+       CellType cellType = evaluator.evaluateFormulaCell(cell);
+
+        switch (cellType) {
+        case NUMERIC:
+            if (HSSFDateUtil.isCellDateFormatted(cell))
+                return sdf.format(cell.getDateCellValue());
+             else
+                return ""+cell.getNumericCellValue();
+        case STRING:
+            return cell.getRichStringCellValue().getString();
+
+        case BOOLEAN:
+            return cell.getBooleanCellValue() ? "TRUE" : "FALSE";
+        case BLANK:
+            return "";
+        case ERROR:
+            return FormulaError.forInt(cell.getErrorCellValue()).getString();
+        default:
+            throw new RuntimeException("Unexpected celltype (" + cellType + ")");
+    }
+}
 
 
     public static void main(String[] args) {

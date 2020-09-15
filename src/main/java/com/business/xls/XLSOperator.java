@@ -61,8 +61,8 @@ public class XLSOperator {
 
         //Name Age    Date of Birth Phone  email  City   Country
 
-        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)"};
-        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Portfolio (RKS)"};
+        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date"};
+        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date"};
         ArrayList<String> outputHeaderList = new ArrayList<String>(Arrays.asList(outPutHeaders));
 
         operator.readXLSFileAndSaveContentToMap();
@@ -116,7 +116,12 @@ public class XLSOperator {
         LinkedHashMap<String, Object> rowMap = entry.getValue();
         ArrayList<String> rowList = new ArrayList<>();
         for (String header:outputHeaders) {
-            rowList.add(rowMap.get(header).toString());
+            if(!rowMap.containsKey(header))
+            {
+                System.out.println("**** Matching Row map does not contain the header key "+header);
+            }
+            String value = (null!= rowMap.get(header))?rowMap.get(header).toString():"";
+            rowList.add(value);
 
 //
         }

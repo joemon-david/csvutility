@@ -1,7 +1,6 @@
 package com.tool.common;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Reporter {
 
@@ -18,6 +17,18 @@ public class Reporter {
         } );
 
     }
+    public static void printHashMap(LinkedHashMap<String, Object> map)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        for(Object obj: map.keySet())
+        {
+            sb.append(obj).append(":").append(map.get(obj)).append(",");
+        }
+        sb.append(" }");
+        System.out.println(sb.toString());
+    }
+
 
 
 

@@ -11,6 +11,13 @@ public class Reporter {
         list.forEach((value)-> System.out.print(value+"\t"));
         System.out.println();
     }
+    public static void printListOfList(ArrayList<ArrayList<String>> listOfList)
+    {
+        listOfList.forEach((list)->{
+            printArrayList(list);
+        } );
+
+    }
 
 
 

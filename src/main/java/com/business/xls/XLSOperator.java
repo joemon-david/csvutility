@@ -39,20 +39,46 @@ public class XLSOperator {
         result = matcher.build();
         ArrayList<ArrayList<String>> filteredList =  convertMapToListWithRequiredHeadersAndAdditionalParameter(result,additionalParam,headers);
         ArrayList<String> headerList = new ArrayList<String>(Arrays.asList(headers));
-        headerList.add(ConfigParams.additionalParamHeaderName);
+        headerList.add(0,ConfigParams.additionalParamHeaderName);
+        Reporter.printArrayList(headerList);
+        Reporter.printListOfList(filteredList);
         new CSVOperator().writeCSVRecordListWithRequiredHeaders(filteredList,relativeOutputFilePath,headerList.toArray(new String[headerList.size()]));
+    }
+
+    public void filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter(String relativeOutputFilePath,String additionalParam,ArrayList<String> outputHeaders,String ...filteringHeaders)
+    {
+        result = matcher.build();
+        ArrayList<ArrayList<String>> filteredList =  convertMapToListWithRequiredHeadersAndAdditionalParameter(result,additionalParam,filteringHeaders);
+        outputHeaders.add(0,ConfigParams.additionalParamHeaderName);
+        Reporter.printArrayList(outputHeaders);
+        Reporter.printListOfList(filteredList);
+        new CSVOperator().writeCSVRecordListWithRequiredHeaders(filteredList,relativeOutputFilePath,outputHeaders.toArray(new String[outputHeaders.size()]));
     }
 
     public static void main(String[] args) {
 
         XLSOperator operator = new XLSOperator();
-        String [] headers = new String[]{"email","phone","age","name"};
+
+        //Name Age    Date of Birth Phone  email  City   Country
+
+        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)"};
+        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Portfolio (RKS)"};
+        ArrayList<String> outputHeaderList = new ArrayList<String>(Arrays.asList(outPutHeaders));
+
         operator.readXLSFileAndSaveContentToMap();
+
         operator.selectAllMatchingRecord();
-        operator.selectRowWithHeaderValueEquals("Country","Germany");
-//        operator.selectRowWithHeaderValueEquals("timestamp","9/11/2020");
-        operator.filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter("data//output//mh.csv","800",headers);
-//        LinkedHashMap<Integer, LinkedHashMap<String, Object>> result = ExcelMatcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName)
+
+        operator.selectRowWithHeaderValueEquals("SecurityType","GTM Fixed Income");
+
+        operator.selectRowWithHeaderValueEquals("Date of execution","9/03/2020");
+
+//            operator.selectRowWithHeaderValueEquals("Portfolio (GATE)","LABLT");
+
+        operator.filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter("data//output//FI_C_JSIT.csv","800",outputHeaderList,headers);
+
+
+//             LinkedHashMap<Integer, LinkedHashMap<String, Object>> result = ExcelMatcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName)
 //                .getAllMatchingRecord().where().headerValueEquals("name","userStatusRowTapped")
 //                .and().headerValueEquals("timestamp","9/11/2020").build();
 //
@@ -101,14 +127,14 @@ public class XLSOperator {
     {
         ArrayList<ArrayList<String>> resultList = new ArrayList<>();
         ArrayList<String> outputHeaders = new ArrayList<> (Arrays.asList(headers));
-        Reporter.printArrayList(outputHeaders);
+
         int suffixIndex = 0;
 
         for (Map.Entry<Integer, LinkedHashMap<String, Object>> entry : map.entrySet()) {
             suffixIndex++;
             ArrayList<String> rowList = getFilteredRowValues(outputHeaders, entry);
-            rowList.add(additionalParam+"_"+suffixIndex);
-            Reporter.printArrayList(rowList);
+            rowList.add(0,additionalParam+"_"+suffixIndex);
+//            Reporter.printArrayList(rowList);
             resultList.add(rowList);
         }
         return resultList;

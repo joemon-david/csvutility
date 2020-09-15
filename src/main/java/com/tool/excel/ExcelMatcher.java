@@ -33,12 +33,12 @@ public class ExcelMatcher {
     public ExcelMatcher headerValueEquals(Object header, Object match)
     {
         equalsObjectMap.put(header,match);
-        sb.append(" ").append(header).append(" == ").append(match);
+        sb.append(" '").append(header).append(" == ").append(match).append(" and ");
         return matcher;
     }
     public ExcelMatcher getAllMatchingRecord()
     {
-        sb.append("Select all matching value ");return matcher;
+        sb.append("Select all matching value where");return matcher;
     }
     public ExcelMatcher where()
     {

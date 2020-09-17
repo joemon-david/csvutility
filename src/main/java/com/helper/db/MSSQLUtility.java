@@ -1,13 +1,18 @@
 package com.helper.db;
 
+import org.apache.ibatis.jdbc.ScriptRunner;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MSSQLUtility {
 
-    public static void main(String[] args) throws SQLException {
-        SQLExecuter sql = SQLExecuter.createSQLServerExecutor("I.P.Address","heartbeat","1433","UBER",
-                "userName","Password","heartbeat");
+    public static void main(String[] args) throws SQLException, IOException {
+        SQLExecuter sql = SQLExecuter.createSQLServerExecutor("","","","",
+                "joemon.david","","");
 
         String sqlQuery = "SELECT TOP 100 [bedId]\n" +
                 "      ,[bayId]\n" +
@@ -31,15 +36,27 @@ public class MSSQLUtility {
                 "      ,[deleted]\n" +
                 "  FROM [heartbeat].[dbo].[hb_bed]";
 
-        ResultSet rs = sql.executeQueryAndGetData(sqlQuery);
-        while(rs.next())
-        {
-            StringBuilder sb = new StringBuilder();
-            System.out.println();
-            for(int i=1;i<20;i++)
-                sb.append(rs.getString(i)).append("\t");
-            System.out.println(sb.toString());
+//        ResultSet rs = sql.executeQueryAndGetData(sqlQuery);
+//        while(rs.next())
+//        {
+//            StringBuilder sb = new StringBuilder();
+//            System.out.println();
+//            for(int i=1;i<20;i++)
+//                sb.append(rs.getString(i)).append("\t");
+//            System.out.println(sb.toString());
+//
+//        }
+        ScriptRunner runner = new ScriptRunner(sql.getConnection());
+        InputStreamReader reader = new InputStreamReader(new FileInputStream("sql/select_sound.sql"));
+        try {
+            runner.runScript(reader);
 
+        } finally {
+            reader.close();
+            runner.closeConnection();
         }
+
+
+
     }
 }

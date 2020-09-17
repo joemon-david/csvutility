@@ -1,5 +1,7 @@
 package com.helper.db;
 
+
+import java.io.File;
 import java.sql.*;
 
 public class SQLExecuter {
@@ -221,7 +223,7 @@ public class SQLExecuter {
     }
 
 
-    private Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         Connection connection = DriverManager.getConnection(connStr, connUser, connPassword);
 
         connection.setAutoCommit(true);
@@ -258,5 +260,9 @@ public class SQLExecuter {
     private void log(String message) {
         //System.out.println(this.getClass() + ":" + connStr + ":" + message);
     }
+
+
+
+
 
 }

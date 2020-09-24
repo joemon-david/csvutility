@@ -8,6 +8,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -56,6 +57,9 @@ public class CSVOperator {
 
         int record1Size=recordList1.size();
         int record2Size=recordList2.size();
+        CSVRecord file1columnNames = recordList1.remove(0);
+        CSVRecord file2columnNames = recordList2.remove(0);
+
         if(record1Size == record2Size)
         {
             System.out.println("Two files having the same number of rows");
@@ -77,22 +81,35 @@ public class CSVOperator {
         }
 
 //        List<CSVRecord> finalRecordListNxt = recordListNxt;
+        ArrayList<HashMap> disparityMapList = new ArrayList<>();
+        int recordRowNumber =0;
+
         for (CSVRecord record1 : recordList) {
-            long recordRowNumber = record1.getRecordNumber();
-            CSVRecord record2 = recordListNxt.get((int) recordRowNumber-1);
+            boolean isMismatchFound = false;
+            HashMap<String,String> mismatchRecord = new HashMap<>();
+//            long recordRowNumber = record1.getRecordNumber();
+            CSVRecord record2 = recordListNxt.get( (recordRowNumber));
             int record1ItemLoop = 0;
             for (String item1 : record1) {
                 String item2 = record2.get(record1ItemLoop);
                 try {
                     if (!item1.equalsIgnoreCase(item2))
+                    {
+                        isMismatchFound = true;
+                        mismatchRecord.put("rowNumber",""+recordRowNumber);
+                        mismatchRecord.put("sourceColumn",file1columnNames.get(record1ItemLoop));
+                        mismatchRecord.put("targetColumn",file2columnNames.get(record1ItemLoop));
+
+
                         System.out.println("Item mismatch found at Row number " + recordRowNumber + " and at the column index " + record1ItemLoop + " (" + item1 + " -> " + item2 + ")");
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 record1ItemLoop++;
             }
-
+            recordRowNumber++;
 
         }
 
@@ -103,10 +120,16 @@ public class CSVOperator {
 
     public static void main(String[] args) {
 
-        CSVWriter writer = new CSVWriter();
-        CSVReader reader = new CSVReader();
+//        CSVWriter writer = new CSVWriter();
+//        CSVReader reader = new CSVReader();
         CSVOperator operator = new CSVOperator();
-        operator.compareTwoCSVFile("data//input//compare//csvSource.csv","data//input//compare//csvSource2.csv");
+        operator.compareTwoCSVFile("data//input//compare//bed.csv","data//input//compare//bed1.csv");
+//        ArrayList<String> list = reader.getRecordKeyList("data//input//compare//bed.csv","SecurityID");
+//        for (String s : list) {
+//            System.out.println(s);
+//        }
+
+
 //        operator.extractContentAndWrite("data//input//people.csv","data//output//benin.csv","Country","norway","Name","Age","Date of Birth","Country");
 
 //        List<CSVRecord> recordList=CSVMatcher.getInstance("data//input//people.csv").getAllMatchingRecord().where().headerValueEquals("age",36)

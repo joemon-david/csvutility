@@ -6,5 +6,6 @@ public interface ConfigParams {
     String masterSheetName= "Sheet1";
     String additionalParamHeaderName = "Additional Header";
     FILE_FORMAT selectedFormat = FILE_FORMAT.XLSX;
+    String dateFormat = "M/dd/yyyy";
 
 }

@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 public class ExcelReader implements ConfigParams {
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("M/dd/yyyy");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat(ConfigParams.dateFormat);
 
     public static Recordset filterWorkSheet(String sheet, String Colname, String criteria) throws Throwable
     {

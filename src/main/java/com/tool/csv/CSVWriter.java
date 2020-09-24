@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +23,24 @@ public class CSVWriter {
             Writer writer = Files.newBufferedWriter(Paths.get(relativeOutputFilePath));
             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers));
             csvPrinter.printRecord(csvRecordList);
+            csvPrinter.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+    }
+
+    public void writeArrayListAsCSV(String relativeOutputFilePath, ArrayList<ArrayList<String>> list, String ... headers)
+    {
+        try {
+
+            Writer writer = Files.newBufferedWriter(Paths.get(relativeOutputFilePath));
+            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers));
+            for(ArrayList<String> row:list)
+            {
+                csvPrinter.printRecord(row);
+            }
+
             csvPrinter.flush();
         }catch (Exception e){
             e.printStackTrace();

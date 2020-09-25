@@ -7,5 +7,6 @@ public interface ConfigParams {
     String additionalParamHeaderName = "Additional Header";
     FILE_FORMAT selectedFormat = FILE_FORMAT.XLSX;
     String dateFormat = "M/dd/yyyy";
+    String fileCompareHtmlFilePath = "data/output/filecomapre.html";
 
 }

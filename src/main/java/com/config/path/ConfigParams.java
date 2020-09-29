@@ -8,5 +8,7 @@ public interface ConfigParams {
     FILE_FORMAT selectedFormat = FILE_FORMAT.XLSX;
     String dateFormat = "M/dd/yyyy";
     String fileCompareHtmlFilePath = "data/output/filecomapre.html";
+    String additionalCSVParamHeaderName = "Expected Status";
+    boolean isToSuffixCounter = false;
 
 }

@@ -28,7 +28,8 @@ public class CSVStepDefiner {
 
     @Given("Read csv file {string}")
     public void read_csv_file(String relativeInputFilePath) {
-        matcher=  CSVMatcher.getInstance(relativeInputFilePath);
+        matcher=  new CSVMatcher();
+        matcher.init(relativeInputFilePath);
     }
 
     @Given("Select all the records that matches below condition")

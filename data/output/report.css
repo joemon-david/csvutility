@@ -1,0 +1,32 @@
+#customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    border:2px solid DodgerBlue;
+    width: 80%;
+    table-layout: auto;
+}
+
+#customers td, #customers th {
+    border: 1px solid DodgerBlue;
+    padding: 8px;
+    width: auto;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+#customers tr:first-child {background-color: #4CAF50; color: #f2f2f2}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#titleDiv h2 { background-color: #4CAF50; color: #f2f2f2; width: 80%;}
+div.briefing { border: 2px solid blue; border-radius: 8px; margin-top: 5%;    margin-bottom: 2%;    margin-right: 25%;    margin-left: 25%;}
+div.pieChart { border-radius: 8px; margin-top: 5%;    margin-bottom: 10%;    margin-right: 25%;    margin-left: 25%;}
+
+p.brief {text-align: center; font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; font-weight: bold; font-family: 'Artifika';font-size: 20px;}

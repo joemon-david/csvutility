@@ -1,5 +1,6 @@
 package com.tool.csv;
 
+import com.config.path.ConfigParams;
 import com.helper.csv.CSVFilter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -68,6 +69,39 @@ public class CSVReader {
 
         return printer;
     }
+
+
+    public CSVPrinter addAdditionalParamAndGetFilteredOutColumnPrinter(List<CSVRecord> fullColumnRecordList,CSVPrinter printer,String additionalValue, String ... neededColumns)
+    {
+
+        try {
+            int counter =1;
+            for(CSVRecord record:fullColumnRecordList)
+            {
+                List<String> valueList = new ArrayList<String>();
+                String suffix="";
+                if(ConfigParams.isToSuffixCounter) {
+                    suffix="_"+counter;
+                }
+
+                valueList.add(0, additionalValue+suffix);
+                for(String column: neededColumns)
+                {
+                    String columnValue = record.get(column);
+                    valueList.add(columnValue);
+
+                }
+
+                printer.printRecord(valueList);
+                counter++;
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return printer;
+    }
+
 
 
 

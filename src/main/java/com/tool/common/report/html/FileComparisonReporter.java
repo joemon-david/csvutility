@@ -3,8 +3,7 @@ package com.tool.common.report.html;
 import com.data.FileCompareDTO;
 import com.hp.gagawa.java.Document;
 import com.hp.gagawa.java.DocumentType;
-import com.hp.gagawa.java.elements.Div;
-import com.hp.gagawa.java.elements.H2;
+import com.hp.gagawa.java.elements.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +17,8 @@ public class FileComparisonReporter {
     {
 //        setBodyAttributes(doc);
         Div mainDiv = new Div().setId("mainDiv");
+        linkCSS();
+
         doc.body.appendChild(mainDiv);
         // Add Title
         mainDiv.appendChild(addReportTitleDiv(dto.getDocumentTitle()));
@@ -48,14 +49,32 @@ public class FileComparisonReporter {
     {
         Div briefingDiv = new Div();
         briefingDiv.setAlign("center");
+        briefingDiv.setCSSClass("briefing");
         briefingMap.forEach((key,value)-> {
-            briefingDiv.appendText(key+":"+value);
-            HTMLCommons.addBr(briefingDiv,1);
+            StringBuilder sb = new StringBuilder();
+            sb.append(key).append(" : ").append(value);
+            P brief = new P();
+            brief.setCSSClass("brief");
+            brief.appendText(sb.toString());
+            briefingDiv.appendChild(brief);
+
         });
 
         return briefingDiv;
 
 
+    }
+
+    private static void linkCSS()
+    {
+        Link link = new Link();
+        link.setRel("stylesheet");
+        link.setHref("report.css");
+        doc.head.appendChild(link);
+        Link googleFont = new Link();
+        googleFont.setRel("stylesheet");
+        googleFont.setHref("https://fonts.googleapis.com/css?family=Artifika");
+        doc.head.appendChild(googleFont);
     }
 
 }

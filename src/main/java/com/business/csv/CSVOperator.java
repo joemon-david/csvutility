@@ -12,10 +12,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CSVOperator implements CommonNames {
@@ -35,6 +32,16 @@ public class CSVOperator implements CommonNames {
         CSVPrinter printer = writer.createCSVPrinter(relativeOutputFilePath,outputHeaders);
         writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,outputHeaders));
     }
+
+    public void writeCSVRecordListWithRequiredHeadersAndAdditionalParameter(List<CSVRecord>  recordList,String relativeOutputFilePath,String additionalParamValue,String ... outputHeaders)
+    {
+        ArrayList<String> headerList = new ArrayList<String>(Arrays.asList(outputHeaders));
+        headerList.add(0,ConfigParams.additionalCSVParamHeaderName);
+        CSVPrinter printer = writer.createCSVPrinter(relativeOutputFilePath,headerList.toArray(new String [headerList.size()]));
+        writer.writeCSVPrinter(reader.addAdditionalParamAndGetFilteredOutColumnPrinter(recordList,printer,additionalParamValue,outputHeaders));
+    }
+
+
 
     public void writeCSVRecordListWithRequiredHeaders(ArrayList<ArrayList<String>> recordList,String relativeOutputFilePath,String ... outputHeaders)
     {
@@ -66,7 +73,8 @@ public class CSVOperator implements CommonNames {
         int record1Size = recordList1.size();
         int record2Size = recordList2.size();
         CSVRecord file1columnNames = recordList1.remove(0);
-        CSVRecord file2columnNames = recordList2.remove(0);
+        recordList2.remove(0);
+
 
         if (record1Size == record2Size) {
             System.out.println("Two files having the same number of rows");
@@ -85,8 +93,14 @@ public class CSVOperator implements CommonNames {
         }
 
 
+        String file1Name = CommonUtils.extractFileName(relativeInputFile1Path);
+        String file2Name = CommonUtils.extractFileName(relativeInputFile2Path);
         ArrayList<ArrayList<String>> disparityTable = new ArrayList<ArrayList<String>>();
-        disparityTable.add(CommonUtils.createMismatchTableHeader());
+        ArrayList<String> tableHeaderList = new ArrayList<>(Arrays.asList(MISMATCH_TABLE_SI,MISMATCH_TABLE_ROW_NO,MISMATCH_TABLE_COLMN,
+                MISMATCH_TABLE_FILE_HEAD+file1Name,MISMATCH_TABLE_FILE_HEAD+file2Name));
+
+        disparityTable.add(tableHeaderList);
+
         int recordRowNumber = 0;
 
         int completeRowMatchedRecords = 0;
@@ -124,16 +138,25 @@ public class CSVOperator implements CommonNames {
 
         }
 
-        dto.setDocumentTitle("File Comparison Report (" + CommonUtils.extractFileName(relativeInputFile1Path) + "," + CommonUtils.extractFileName(relativeInputFile2Path) + ")");
+
+        dto.setDocumentTitle("File Comparison Report (" + file1Name + "," + file2Name + ")");
         dto.setPieChartTitle(PIE_CHART_TITLE);
         dto.setPieChartDivId(PIE_CHART_DIV_ID);
         StringBuilder data = new StringBuilder();
+        int mismatchedRows = recordList.size()-completeRowMatchedRecords;
         data.append("['Item','Count'],");
         data.append("['Matched',").append(completeRowMatchedRecords + "").append("],").
-                append("['MisMatched',").append(recordList.size()-completeRowMatchedRecords + "").append("],").
-                append("['Orphan records',").append(recordListNxt.size() - recordList.size() + "").append("],");
+                append("['MisMatched',").append(mismatchedRows+ "").append("],").
+                append("['Orphan records',").append(recordListNxt.size() - recordList.size() + "").append("]");
         dto.setPieChartData(data);
-        dto.setBriefingMap(CommonUtils.createBriefingMap(recordList.size(), recordListNxt.size(), recordList.size(), disparityTable.size()));
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        map.put(REP_TOT_REC_FIL1+file1Name,""+recordList.size());
+        map.put(REP_TOT_REC_FIL2+file2Name,""+recordListNxt.size());
+        map.put(REP_TOT_REC_COMPRD,""+recordList.size());
+        map.put(REP_TOT_ROW_MIS_MATCH,mismatchedRows+"");
+        map.put(REP_TOT_MIS_MATCH,""+disparityTable.size());
+
+        dto.setBriefingMap(map);
         dto.setTableData(disparityTable);
         dto.setOutputFilePath(ConfigParams.fileCompareHtmlFilePath);
         FileComparisonReporter.createFileComparisonReport(dto);
@@ -145,10 +168,15 @@ public class CSVOperator implements CommonNames {
 
     public static void main(String[] args) {
 
-//        CSVWriter writer = new CSVWriter();
-//        CSVReader reader = new CSVReader();
+        CSVWriter writer = new CSVWriter();
+        CSVReader reader = new CSVReader();
         CSVOperator operator = new CSVOperator();
-        operator.compareTwoCSVFile("data//input//compare//csvSource.csv","data//input//compare//csvSource2.csv");
+
+        List<CSVRecord> recordList=reader.getMatchingRecordList("data//input//compare//17_09_2020.csv","Assignee","joemon.david");
+        operator.writeCSVRecordListWithRequiredHeadersAndAdditionalParameter(recordList,"data//output//additional.csv",
+                "True","Issue Type","Issue key","Issue id","Summary","Status");
+
+        operator.compareTwoCSVFile("data//input//compare//17_09_2020.csv","data//input//compare//18_09_2020.csv");
 //        ArrayList<String> list = reader.getRecordKeyList("data//input//compare//bed.csv","SecurityID");
 //        for (String s : list) {
 //            System.out.println(s);

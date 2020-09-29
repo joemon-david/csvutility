@@ -16,25 +16,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CSVMatcher {
 
-    private static volatile CSVMatcher matcher = null;
+
     private static CSVParser csvParser = null;
     private static List<CSVRecord> matchingCSVRecordList = null;
     private static Map<Object,Object> equalsObjectMap = null;
 
-    private CSVMatcher()
-    {
 
-    }
 
- public static CSVMatcher getInstance(String relativeCSVFilePath)
+ public void init(String relativeCSVFilePath)
  {
-     if(matcher ==null)
-     {
-         synchronized (CSVMatcher.class)
-         {
-             matcher= new CSVMatcher();
-         }
-     }
+
      if(csvParser ==null)
      {
          BufferedReader reader;
@@ -56,27 +47,24 @@ public class CSVMatcher {
      {
          equalsObjectMap = new HashMap<>();
      }
-
-
-     return matcher;
  }
 
  public CSVMatcher getAllMatchingRecord()
  {
-     return matcher;
+     return this;
  }
  public CSVMatcher where()
  {
-     return matcher;
+     return this;
  }
  public CSVMatcher and()
  {
-     return matcher;
+     return this;
  }
  public CSVMatcher headerValueEquals(Object header, Object match)
  {
      equalsObjectMap.put(header,match);
-     return matcher;
+     return this;
  }
 
 

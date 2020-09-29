@@ -61,7 +61,8 @@ public class PieChartCreater {
         doc.head.appendChild(chartLoader).appendChild(chartScript);
         Div chartDiv = new Div();
         chartDiv.setId(divId);
-        chartDiv.setStyle("\"width: 700px; height: 500px;");
+        chartDiv.setCSSClass("pieChart");
+//        chartDiv.setStyle("width: 80%; height: 70%;");
         chartDiv.setAlign("center");
         return chartDiv;
 

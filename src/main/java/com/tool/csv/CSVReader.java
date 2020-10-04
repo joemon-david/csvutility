@@ -124,6 +124,25 @@ public class CSVReader {
        return allCSVRecordList;
    }
 
+    public List<CSVRecord> getAllRecordListWithHeaders(String relativeCSVFilePath)
+    {
+        List<CSVRecord> allCSVRecordList = new ArrayList<CSVRecord>();
+        try {
+
+            BufferedReader reader = Files.newBufferedReader(Paths.get(relativeCSVFilePath));
+            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withTrim().withFirstRecordAsHeader());
+            for(CSVRecord csvRecord : csvParser)
+            {
+                allCSVRecordList.add(csvRecord);
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return allCSVRecordList;
+    }
+
    public ArrayList<String> getRecordKeyList(String relativeCSVFilePath,String key)
    {
        ArrayList<String> recordKeyList = new ArrayList<String>();

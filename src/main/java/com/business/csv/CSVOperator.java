@@ -1,19 +1,19 @@
 package com.business.csv;
 
 import com.config.path.ConfigParams;
+import com.data.ConditionalCSVFormatDTO;
 import com.data.FileCompareDTO;
 import com.tool.common.CommonNames;
 import com.tool.common.CommonUtils;
 import com.tool.common.report.html.FileComparisonReporter;
-import com.tool.csv.CSVMatcher;
 import com.tool.csv.CSVReader;
 import com.tool.csv.CSVWriter;
+import cucumber.api.java.hu.Ha;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CSVOperator implements CommonNames {
     static CSVReader reader = new CSVReader();
@@ -41,9 +41,73 @@ public class CSVOperator implements CommonNames {
         writer.writeCSVPrinter(reader.addAdditionalParamAndGetFilteredOutColumnPrinter(recordList,printer,additionalParamValue,outputHeaders));
     }
 
+    public void conditionalFormatDataAndWriteCSV(String inputCSVPath, ArrayList<ConditionalCSVFormatDTO> formatDTOArrayList,String outputCSVPath)
+    {
+
+        List<CSVRecord> recordList = reader.getAllRecordListWithHeaders(inputCSVPath);
+        ArrayList<ArrayList<String>> printerList = new ArrayList<ArrayList<String>>();
+        ArrayList<String>headerList = new ArrayList<>();
+        Map<String,String> recordHeaderMap = recordList.get(0).toMap();
+        recordHeaderMap.forEach((key,map)-> headerList.add(key));
 
 
-    public void writeCSVRecordListWithRequiredHeaders(ArrayList<ArrayList<String>> recordList,String relativeOutputFilePath,String ... outputHeaders)
+        for(CSVRecord record: recordList)
+        {
+            ArrayList<String> valueList = new ArrayList<String>();
+            Map<String,String> recordMap= record.toMap();
+            recordMap.forEach((key,value)-> valueList.add(value));
+            HashMap<String,String> conditionalMap = conditionalFormatCSVRecord(record,formatDTOArrayList);
+            for(String key:conditionalMap.keySet())
+            {
+                if(!headerList.contains(key))
+                headerList.add(key);
+                valueList.add(conditionalMap.get(key));
+            }
+            printerList.add(valueList);
+        }
+
+        writer.writeArrayListAsCSV(outputCSVPath,printerList,headerList.toArray(new String [headerList.size()]));
+    }
+
+    private ArrayList<String> getHeaderMapFromCSVRecord( CSVRecord record)
+    {
+        ArrayList<String>headerList = new ArrayList<>();
+        record.forEach((key)-> headerList.add(key));
+        return headerList;
+    }
+
+    private HashMap<String,String> conditionalFormatCSVRecord(CSVRecord record,ArrayList<ConditionalCSVFormatDTO> formatDTOArrayList)
+    {
+        HashMap<String,String> valueMap = new HashMap<String,String>();
+
+
+
+        for(ConditionalCSVFormatDTO dto:formatDTOArrayList)
+        {
+            String conditionalKey = dto.getConditionHeaderName();
+            String conditionalValue = dto.getConditionHeaderValue();
+            String recordValue = record.get(conditionalKey);
+            if(recordValue.equalsIgnoreCase(conditionalValue))
+            {
+                valueMap.put(dto.getFormatHeaderName(),dto.getFormatHeaderValue());
+                break;
+            }
+            else
+                valueMap.put(dto.getFormatHeaderName(),"");
+        }
+
+        return valueMap;
+
+    }
+
+
+
+
+
+
+
+
+    public void     writeCSVRecordListWithRequiredHeaders(ArrayList<ArrayList<String>> recordList,String relativeOutputFilePath,String ... outputHeaders)
     {
         CSVPrinter printer = writer.createCSVPrinter(relativeOutputFilePath,outputHeaders);
 
@@ -172,11 +236,19 @@ public class CSVOperator implements CommonNames {
         CSVReader reader = new CSVReader();
         CSVOperator operator = new CSVOperator();
 
-        List<CSVRecord> recordList=reader.getMatchingRecordList("data//input//compare//17_09_2020.csv","Assignee","joemon.david");
-        operator.writeCSVRecordListWithRequiredHeadersAndAdditionalParameter(recordList,"data//output//additional.csv",
-                "True","Issue Type","Issue key","Issue id","Summary","Status");
+        ArrayList<ConditionalCSVFormatDTO> formatDTOArrayList = new ArrayList<>();
+        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","577081BD3","CompanyName","Infosys"));
+        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","33767BAB5","CompanyName","TCS"));
+        operator.conditionalFormatDataAndWriteCSV("data//input//compare//csvSource.csv",formatDTOArrayList,"data//output//formated.csv");
 
-        operator.compareTwoCSVFile("data//input//compare//17_09_2020.csv","data//input//compare//18_09_2020.csv");
+
+
+
+//        List<CSVRecord> recordList=reader.getMatchingRecordList("data//input//compare//17_09_2020.csv","Assignee","joemon.david");
+//        operator.writeCSVRecordListWithRequiredHeadersAndAdditionalParameter(recordList,"data//output//additional.csv",
+//                "True","Issue Type","Issue key","Issue id","Summary","Status");
+
+//        operator.compareTwoCSVFile("data//input//compare//17_09_2020.csv","data//input//compare//18_09_2020.csv");
 //        ArrayList<String> list = reader.getRecordKeyList("data//input//compare//bed.csv","SecurityID");
 //        for (String s : list) {
 //            System.out.println(s);

@@ -15,7 +15,8 @@ public class XLSOperator {
 
     public void readXLSFileAndSaveContentToMap()
     {
-        matcher = ExcelMatcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName);
+        matcher = new ExcelMatcher();
+                matcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName);
     }
 
     public void selectAllMatchingRecord()

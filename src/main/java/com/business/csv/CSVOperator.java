@@ -6,6 +6,7 @@ import com.data.FileCompareDTO;
 import com.tool.common.CommonNames;
 import com.tool.common.CommonUtils;
 import com.tool.common.report.html.FileComparisonReporter;
+import com.tool.csv.CSVMatcher;
 import com.tool.csv.CSVReader;
 import com.tool.csv.CSVWriter;
 import cucumber.api.java.hu.Ha;
@@ -236,10 +237,10 @@ public class CSVOperator implements CommonNames {
         CSVReader reader = new CSVReader();
         CSVOperator operator = new CSVOperator();
 
-        ArrayList<ConditionalCSVFormatDTO> formatDTOArrayList = new ArrayList<>();
-        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","577081BD3","CompanyName","Infosys"));
-        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","33767BAB5","CompanyName","TCS"));
-        operator.conditionalFormatDataAndWriteCSV("data//input//compare//csvSource.csv",formatDTOArrayList,"data//output//formated.csv");
+//        ArrayList<ConditionalCSVFormatDTO> formatDTOArrayList = new ArrayList<>();
+//        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","577081BD3","CompanyName","Infosys"));
+//        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","33767BAB5","CompanyName","TCS"));
+//        operator.conditionalFormatDataAndWriteCSV("data//input//compare//csvSource.csv",formatDTOArrayList,"data//output//formated.csv");
 
 
 
@@ -257,10 +258,11 @@ public class CSVOperator implements CommonNames {
 
 //        operator.extractContentAndWrite("data//input//people.csv","data//output//benin.csv","Country","norway","Name","Age","Date of Birth","Country");
 
-//        List<CSVRecord> recordList=CSVMatcher.getInstance("data//input//people.csv").getAllMatchingRecord().where().headerValueEquals("age",36)
-//        .and().headerValueEquals("Country","Singapore").build();
-//
-//        CSVPrinter printer = writer.createCSVPrinter("data//output//benin2.csv","Name","Age","Phone","email","City","Country");
-//        writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,"Name","Age","Phone","email","City","Country"));
+        List<CSVRecord> recordList=new CSVMatcher().init("data//input//Temp_TestSuite.csv").getAllMatchingRecord().where().headerValueEquals("SecurityType","GTM FXF")
+        .and().headerValueHaveAny("TransactionType",new String [] {"Buy","Buy Cancel"}).sortByHeaderValues("TransactionType",new String [] {"Buy Cancel","Buy"}).build();
+        String [] headers = {"BlockId","Automation","SecurityType","TransactionType","SecurityID","Account","RecordType","TradeDate","SettlementDate","Broker"};
+
+        CSVPrinter printer = writer.createCSVPrinter("data//output//extracted.csv",headers);
+        writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,headers));
     }
 }

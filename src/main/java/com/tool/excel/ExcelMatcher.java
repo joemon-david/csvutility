@@ -10,45 +10,36 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ExcelMatcher {
-    private static volatile ExcelMatcher matcher = null;
+
     private static LinkedHashMap<Integer, LinkedHashMap<String,Object>> excelSheetDataMap = new LinkedHashMap<>();
     private static Map<Object,Object> equalsObjectMap = new LinkedHashMap<>();
     private static LinkedHashMap<Integer, LinkedHashMap<String,Object>> matchingDataMap = new LinkedHashMap<>();
     private static StringBuilder sb = new StringBuilder();
 
 
-    private ExcelMatcher (){}
 
-    public static ExcelMatcher getInstance(String excelFilePath,String sheetName){
-        if(matcher ==null)
-        {
-            synchronized (ExcelMatcher.class)
-            {
-                matcher= new ExcelMatcher();
-            }
-        }
+
+    public static void getInstance(String excelFilePath, String sheetName){
 
         excelSheetDataMap = ExcelReader.readDataFromExcelFile(excelFilePath,sheetName);
-
-        return matcher;
     }
     public ExcelMatcher headerValueEquals(Object header, Object match)
     {
         equalsObjectMap.put(header,match);
         sb.append(" '").append(header).append("'").append(" == ").append(" '").append(match).append("' and ");
-        return matcher;
+        return this;
     }
     public ExcelMatcher getAllMatchingRecord()
     {
-        sb.append("Select all matching value where");return matcher;
+        sb.append("Select all matching value where");return this;
     }
     public ExcelMatcher where()
     {
-        sb.append(" where "); return matcher;
+        sb.append(" where "); return this;
     }
     public ExcelMatcher and()
     {
-        sb.append(" and "); return matcher;
+        sb.append(" and "); return this;
     }
 
     public LinkedHashMap<Integer, LinkedHashMap<String,Object>> build()

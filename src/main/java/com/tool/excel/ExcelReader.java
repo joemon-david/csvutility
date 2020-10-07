@@ -73,7 +73,8 @@ public class ExcelReader implements ConfigParams {
                             String dtValue = sdf.format(currentCell.getDateCellValue());
                             rowDataMap.put(headerMap.get(columnNumber), dtValue);
                         } else {
-                            rowDataMap.put(headerMap.get(columnNumber), currentCell.getNumericCellValue());
+                            long lng = (long) currentCell.getNumericCellValue();
+                            rowDataMap.put(headerMap.get(columnNumber), lng);
 //
                         }
                     }else if (currentCell.getCellType() == CellType.BOOLEAN)

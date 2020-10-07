@@ -258,8 +258,11 @@ public class CSVOperator implements CommonNames {
 
 //        operator.extractContentAndWrite("data//input//people.csv","data//output//benin.csv","Country","norway","Name","Age","Date of Birth","Country");
 
-        List<CSVRecord> recordList=new CSVMatcher().init("data//input//Temp_TestSuite.csv").getAllMatchingRecord().where().headerValueEquals("SecurityType","GTM FXF")
-        .and().headerValueHaveAny("TransactionType",new String [] {"Buy","Buy Cancel"}).sortByHeaderValues("TransactionType",new String [] {"Buy Cancel","Buy"}).build();
+        List<CSVRecord> recordList=new CSVMatcher().init("data//input//Temp_TestSuite.csv").getAllMatchingRecord().
+                where().headerValueEquals("SecurityType","GTM FXF")
+        .and().headerValueHaveAny("TransactionType",new String [] {"Buy","Buy Cancel"})
+                .sortByHeaderValues("TransactionType",new String [] {"Buy Cancel","Buy"}).build();
+
         String [] headers = {"BlockId","Automation","SecurityType","TransactionType","SecurityID","Account","RecordType","TradeDate","SettlementDate","Broker"};
 
         CSVPrinter printer = writer.createCSVPrinter("data//output//extracted.csv",headers);

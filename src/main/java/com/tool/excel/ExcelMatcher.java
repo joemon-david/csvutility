@@ -53,6 +53,10 @@ public class ExcelMatcher {
             boolean isMatchFound = false;
             for (Map.Entry<Object, Object> entry : equalsObjectMap.entrySet()) {
                 Object key = entry.getKey();
+                Object value = map.get(key);
+                if(null == value)
+                    continue;
+
                 Object expectedColumnValue = entry.getValue();
                 String actualColumnValue = map.get(key).toString();
                 if (actualColumnValue.equalsIgnoreCase(expectedColumnValue.toString()))

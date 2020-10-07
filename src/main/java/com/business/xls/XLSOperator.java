@@ -16,7 +16,7 @@ public class XLSOperator {
     public void readXLSFileAndSaveContentToMap()
     {
         matcher = new ExcelMatcher();
-                matcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName);
+        matcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName);
     }
 
     public void selectAllMatchingRecord()
@@ -62,17 +62,17 @@ public class XLSOperator {
 
         //Name Age    Date of Birth Phone  email  City   Country
 
-        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date"};
-        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date"};
+        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date","Security ID"};
+        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date","Security ID"};
         ArrayList<String> outputHeaderList = new ArrayList<String>(Arrays.asList(outPutHeaders));
 
         operator.readXLSFileAndSaveContentToMap();
 
         operator.selectAllMatchingRecord();
 
-        operator.selectRowWithHeaderValueEquals("SecurityType","GTM Fixed Income");
+        operator.selectRowWithHeaderValueEquals("SecurityType","GTM Equity");
 
-        operator.selectRowWithHeaderValueEquals("Date of execution","9/03/2020");
+        operator.selectRowWithHeaderValueEquals("Date of execution","8/31/2020");
 
 //            operator.selectRowWithHeaderValueEquals("Portfolio (GATE)","LABLT");
 

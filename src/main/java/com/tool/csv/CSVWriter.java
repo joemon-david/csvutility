@@ -51,6 +51,7 @@ public class CSVWriter {
     public void writeCSVPrinter(CSVPrinter printer)
     {
         try {
+
             printer.flush();
 
         } catch (Exception e) {

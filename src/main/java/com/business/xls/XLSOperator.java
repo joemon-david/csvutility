@@ -35,6 +35,12 @@ public class XLSOperator {
         ArrayList<ArrayList<String>> filteredList =  convertMapToListWithRequiredHeaders(result,headers);
         new CSVOperator().writeCSVRecordListWithRequiredHeaders(filteredList,relativeOutputFilePath,headers);
     }
+    public void filterExcelMapAndCreateCSVWithRequiredHeaders(String relativeOutputFilePath,ArrayList<String> outputHeaders,String ...headers)
+    {
+        result = matcher.build();
+        ArrayList<ArrayList<String>> filteredList =  convertMapToListWithRequiredHeaders(result,headers);
+        new CSVOperator().writeCSVRecordListWithRequiredHeaders(filteredList,relativeOutputFilePath,outputHeaders.toArray(new String[outputHeaders.size()]));
+    }
     public void filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter(String relativeOutputFilePath,String additionalParam,String ...headers)
     {
         result = matcher.build();
@@ -62,21 +68,22 @@ public class XLSOperator {
 
         //Name Age    Date of Birth Phone  email  City   Country
 
-        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date","Security ID"};
-        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date","Security ID"};
+        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date","Security ID","Automation"};
+        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Account","Portfolio Desk","Trade Date","Settle Date","Security ID","Automation"};
         ArrayList<String> outputHeaderList = new ArrayList<String>(Arrays.asList(outPutHeaders));
 
         operator.readXLSFileAndSaveContentToMap();
 
         operator.selectAllMatchingRecord();
 
-        operator.selectRowWithHeaderValueEquals("SecurityType","GTM Equity");
+        operator.selectRowWithHeaderValueEquals("Automation","Y");
 
-        operator.selectRowWithHeaderValueEquals("Date of execution","8/31/2020");
+        operator.selectRowWithHeaderValueEquals("Date of execution","10/12/2020");
 
 //            operator.selectRowWithHeaderValueEquals("Portfolio (GATE)","LABLT");
 
-        operator.filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter("data//output//FI_C_JSIT.csv","800",outputHeaderList,headers);
+//        operator.filterExcelMapAndCreateCSVWithRequiredHeadersAndAdditionalParameter("data//output//FI_C_JSIT.csv","800",outputHeaderList,headers);
+        operator.filterExcelMapAndCreateCSVWithRequiredHeaders("data//output//xlsop.csv",outputHeaderList,headers);
 
 
 //             LinkedHashMap<Integer, LinkedHashMap<String, Object>> result = ExcelMatcher.getInstance(ConfigParams.masterFilePath, ConfigParams.masterSheetName)

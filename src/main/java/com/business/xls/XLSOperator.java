@@ -68,8 +68,11 @@ public class XLSOperator {
 
         //Name Age    Date of Birth Phone  email  City   Country
 
-        String [] headers = new String[]{"Tran Type","Day","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date","Security ID","Automation"};
-        String [] outPutHeaders = new String[]{"Transaction Type","No of Days","Account","Portfolio Desk","Trade Date","Settle Date","Security ID","Automation"};
+//        String [] headers = new String[]{"Block Id","Tran Type","Day","Portfolio (RKS)","Portfolio Desk","Trade Date","Settle Date","Security ID","Automation"};
+//        String [] outPutHeaders = new String[]{"BlockId","Transaction Type","No of Days","Account","Portfolio Desk","Trade Date","Settle Date","Security ID","Automation"};
+
+        String [] headers = new String[]{"Automation","Block Id","Portfolio Desk","Security Type","Tran Type","Security ID","Portfolio (GATE)","Record_Type","Trade Date","Settle Date","Broker (GATE)","Units","Price"};
+        String [] outPutHeaders = new String[]{"Automation","BlockId","PortfolioDesk","SecurityType","TransactionType","SecurityID","Account","RecordType","TradeDate","SettlementDate","Broker","Quantity","Price"};
         ArrayList<String> outputHeaderList = new ArrayList<String>(Arrays.asList(outPutHeaders));
 
         operator.readXLSFileAndSaveContentToMap();

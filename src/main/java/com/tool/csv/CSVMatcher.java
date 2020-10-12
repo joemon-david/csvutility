@@ -22,6 +22,7 @@ public class CSVMatcher {
     private  boolean isEqualOperationCalled = false;
     private  boolean isContainsOperationCalled = false;
     private boolean isSortingOperationCalled = false;
+    private StringBuilder sb = new StringBuilder();
 
 
 
@@ -46,6 +47,7 @@ public class CSVMatcher {
 
  public CSVMatcher getAllMatchingRecord()
  {
+     sb.append("Select All Matching records , where ");
      return this;
  }
  public CSVMatcher where()
@@ -58,6 +60,7 @@ public class CSVMatcher {
  }
  public CSVMatcher headerValueEquals(Object header, Object match)
  {
+     sb.append("'"+header+"' = '"+match+"'  and ");
      isEqualOperationCalled = true;
      equalsObjectMap.put(header,match);
      return this;
@@ -65,6 +68,7 @@ public class CSVMatcher {
 
  public CSVMatcher headerValueHaveAny(Object header, String [] anyMatchingValues)
  {
+     sb.append(" contains ("+Arrays.asList(anyMatchingValues)+" ) and ");
      isContainsOperationCalled = true;
      ArrayList<Object> containsList = new ArrayList<>(Arrays.asList(anyMatchingValues));
      containsObjectMap.put(header,containsList);
@@ -82,7 +86,8 @@ public class CSVMatcher {
 
  public List<CSVRecord> build()
  {
-       List<CSVRecord> matchingCSVRecordList = new ArrayList<>();
+     System.out.println(sb.toString());
+     List<CSVRecord> matchingCSVRecordList = new ArrayList<>();
      for(CSVRecord csvRecord : csvParser)
      {
         boolean isEqualsMatchFound = isRecordMatchesEqualsObjectMap(csvRecord);
@@ -131,6 +136,7 @@ public class CSVMatcher {
              if (headerValue.equalsIgnoreCase(values.toString())) {
                  isMatchFound=true;
              } else {
+                 isMatchFound = false;
                  break;
              }
 

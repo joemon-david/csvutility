@@ -237,6 +237,12 @@ public class CSVOperator implements CommonNames {
         CSVReader reader = new CSVReader();
         CSVOperator operator = new CSVOperator();
 
+
+        String [] headers = new String[]{"Automation","Block Id","Portfolio Desk","Security Type","Tran Type","Security ID","Portfolio (GATE)","Record_Type","Trade Date","Settle Date","Broker (GATE)","Units","Price"};
+
+        String [] outPutHeaders = new String[]{"Automation","BlockId","PortfolioDesk","SecurityType","TransactionType","SecurityID","Account","RecordType","TradeDate","SettlementDate","Broker","Quantity","Price"};
+
+
 //        ArrayList<ConditionalCSVFormatDTO> formatDTOArrayList = new ArrayList<>();
 //        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","577081BD3","CompanyName","Infosys"));
 //        formatDTOArrayList.add(new ConditionalCSVFormatDTO("SecurityID","33767BAB5","CompanyName","TCS"));
@@ -259,13 +265,13 @@ public class CSVOperator implements CommonNames {
 //        operator.extractContentAndWrite("data//input//people.csv","data//output//benin.csv","Country","norway","Name","Age","Date of Birth","Country");
 
         List<CSVRecord> recordList=new CSVMatcher().init("data//input//Temp_TestSuite.csv").getAllMatchingRecord().
-                where().headerValueEquals("SecurityType","GTM FXF")
+                where().headerValueEquals("SecurityType","GTM Fixed Income").and().headerValueEquals("PortfolioDesk","Bank Loans")
         .and().headerValueHaveAny("TransactionType",new String [] {"Buy","Buy Cancel"})
                 .sortByHeaderValues("TransactionType",new String [] {"Buy Cancel","Buy"}).build();
-
-        String [] headers = {"BlockId","Automation","SecurityType","TransactionType","SecurityID","Account","RecordType","TradeDate","SettlementDate","Broker"};
-
-        CSVPrinter printer = writer.createCSVPrinter("data//output//extracted.csv",headers);
-        writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,headers));
+//
+//        String [] headers = {"BlockId","Automation","SecurityType","TransactionType","SecurityID","Account","RecordType","TradeDate","SettlementDate","Broker"};
+//
+//        CSVPrinter printer = writer.createCSVPrinter("data//output//extracted.csv",headers);
+//        writer.writeCSVPrinter(reader.getFilteredOutColumnPrinter(recordList,printer,headers));
     }
 }

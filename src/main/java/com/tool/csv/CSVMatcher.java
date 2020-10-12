@@ -158,6 +158,7 @@ public class CSVMatcher {
                 if (containsList.contains(headerValue)) {
                     isMatchFound=true;
                 } else {
+                    isMatchFound=false;
                     break;
                 }
 

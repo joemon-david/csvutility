@@ -61,6 +61,7 @@ public class ExcelReader implements ConfigParams {
 
 
                     Cell currentCell = cellIterator.next();
+                    CellType cellType = currentCell.getCellType();
 
                     if (currentCell.getCellType() == CellType.STRING) {
                         String sValue = currentCell.getStringCellValue();
@@ -137,6 +138,87 @@ public class ExcelReader implements ConfigParams {
             throw new RuntimeException("Unexpected celltype (" + cellType + ")");
     }
 }
+
+    public  LinkedHashMap<Integer,LinkedHashMap<String,Object>> readAllDataFromExcelFile(String filePath, String sheetName,int maxCellToCheck)
+    {
+        LinkedHashMap<Integer,LinkedHashMap<String,Object>> excelDataMap = null;
+        try {
+
+            FileInputStream excelFile = new FileInputStream(new File(filePath));
+
+            Workbook workbook = (ConfigParams.selectedFormat == FILE_FORMAT.XLSX)?new XSSFWorkbook(excelFile) :new HSSFWorkbook(excelFile);
+
+            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            excelDataMap = new LinkedHashMap<>();
+            LinkedHashMap<Integer,String> headerMap = new LinkedHashMap<>();
+            int recordNumber=0;
+
+            Sheet datatypeSheet = workbook.getSheet(sheetName);
+
+            for (Row currentRow : datatypeSheet) {
+
+                LinkedHashMap<String, Object> rowDataMap = new LinkedHashMap<>();
+
+                for (int columnNumber =0;columnNumber<maxCellToCheck;columnNumber++) {
+
+                    Cell currentCell = currentRow.getCell(columnNumber);
+                    if(null==currentCell)
+                    {
+                        rowDataMap.put(headerMap.get(columnNumber),"");
+                        continue;
+                    }
+
+
+
+                    CellType cellType = currentCell.getCellType();
+
+                    if (currentCell.getCellType() == CellType.STRING) {
+                        String sValue = currentCell.getStringCellValue();
+                        if (recordNumber == 0)
+                            headerMap.put(columnNumber, sValue);
+                        else
+                            rowDataMap.put(headerMap.get(columnNumber), sValue);
+                    } else if (currentCell.getCellType() == CellType.NUMERIC) {
+                        if (HSSFDateUtil.isCellDateFormatted(currentCell)) {
+                            String dtValue = sdf.format(currentCell.getDateCellValue());
+                            rowDataMap.put(headerMap.get(columnNumber), dtValue);
+                        } else {
+                            long lng = (long) currentCell.getNumericCellValue();
+                            rowDataMap.put(headerMap.get(columnNumber), lng);
+//
+                        }
+                    }else if (currentCell.getCellType() == CellType.BOOLEAN)
+                    {
+                        rowDataMap.put(headerMap.get(columnNumber),currentCell.getBooleanCellValue());
+                    }
+                    else if(currentCell.getCellType() == CellType.FORMULA)
+                    {
+                        rowDataMap.put(headerMap.get(columnNumber),getFormulaValue(evaluator,currentCell));
+                    }else if (currentCell.getCellType() == CellType.BLANK)
+                    {
+                        rowDataMap.put(headerMap.get(columnNumber),"");
+                    }
+
+
+                }
+                if (recordNumber > 0)
+                    excelDataMap.put(recordNumber, rowDataMap);
+                recordNumber++;
+
+            }
+
+            System.out.println("Scanning Completed ->Total Records "+recordNumber);
+            System.out.print("Header values -> ");
+            headerMap.forEach((key,value)-> System.out.print(value+","));
+            System.out.println();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return excelDataMap;
+
+    }
+
 
 
     public static void main(String[] args) {

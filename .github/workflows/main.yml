@@ -20,7 +20,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: 5e7be7a8f524a29adbceecc1e291ad599cf57099
+          token: 19ede88917fab3a27f0daaf8a64badac217440d3
           repository: joemon-david/csvutility
           event-type: my-event
           client-payload: '{"prnumber": "${{ github.event.number }}", "checkrunid": "${{ github.run_id }}"}'

@@ -22,5 +22,5 @@ jobs:
         with:
           token: 76ce7ec1a4c54754dba05d12e434fa9d33735a2f
           repository: joemon-david/csvutility
-          event-type: dispach_event
+          event-type: my-event
           client-payload: '{"prnumber": "${{ github.event.number }}", "checkrunid": "${{ github.run_id }}"}'

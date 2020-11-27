@@ -21,6 +21,8 @@ public interface ConfigParams {
     String COMPARE_TARGET_DIR_PATH = "data/input/compare/target/";
     String COMPARE_RESULT_MATCHES = "PASS";
     String COMPARE_RESULT_MIS_MATCHES= "FAILED";
+    Integer COMPARE_MAX_COLUMN_IN_CONFIG_FILE = 7;
+    String COMPARE_TRANS_LOGIC_TOLERANCE= "Tolerance";
 
 
 

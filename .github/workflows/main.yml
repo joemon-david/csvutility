@@ -1,26 +1,24 @@
-name: PRnew
-on: [pull_request]
-  
+name: Java CI
+
+on: [push]
+
 jobs:
-  job1:
-    runs-on: [ubuntu-latest]
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - shell: bash
-        run: |
-          expr 3 + 7 > math-homework.txt
-      - name: Upload math result for job 1
-        uses: actions/upload-artifact@v1
-        with:
-          name: homework
-          path: math-homework.txt
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: cdcf675f068a23f4d9a482e7fdb40b7f13e8a61c
-          repository: joemon-david/csvutility
-          event-type: my-event
-          client-payload: '{"prnumber": "${{ github.event.number }}", "checkrunid": "${{ github.run_id }}"}'
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Build with Maven
+      run: mvn -B verify spotbugs:spotbugs
+    - uses: ./.github/actions/spotbug-publish
+      with:
+        path: '**/spotbugsXml.xml'
